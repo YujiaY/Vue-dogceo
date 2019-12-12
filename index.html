@@ -38,7 +38,7 @@
           <li v-for="(pic, index) in picsUrls">
             <div> <span>{{picDivs[index]}}</span> <img :src=pic alt="" :id=pic></div>
             <div>
-              <span>Not like it? </span><button>DELETE it!</button>
+              <span>Not like it? </span><button @click="removeElement(index)">DELETE it!</button>
             </div>
             <hr>
           </li>
