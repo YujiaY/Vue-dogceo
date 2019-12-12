@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+    <meta charset="utf-8">
+    <title>Dog CEO Application</title>
+  </head>
+
+  <body>
+    <div class="container text-center" id="app">
+      <h3 class="text-center">Dog Breeds</h3>
+      <p>Number of Breeds: {{allBreeds.length}}</p>
+      <span>Selected Breeds: {{ selectedBreeds }}</span>
+
+      <hr>
+
+      <div class="text-center columns medium-4" >
+
+        <ol>
+          <li v-for="(value, name) in allBreeds" >
+
+          <input
+            type="checkbox"
+            :id=name
+            :value=name
+            v-model="selectedBreeds"
+            :disabled="selectedBreeds.length >= maxSelection && selectedBreeds.indexOf(name) == -1"
+          >
+          <label :for=name>{{ name }}({{value.length}}) </label>
+
+          </li>
+        </ol>
+      </div>
+
+      <div class="text-center columns medium-8" >
+        <h3>Photos are shown here:</h3>
+        <ol>
+          <li v-for="(pic, index) in picsUrls">
+            <div> <span>{{picDivs[index]}}</span> <img :src=pic alt="" :id=pic></div>
+            <div>
+              <span>Not like it? </span><button>DELETE it!</button>
+            </div>
+            <hr>
+          </li>
+        </ol>
+      </div>
+
+      <hr>
+    </div>
+
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script src="vueApp.js"></script>
+
+    <style scoped>
+      button {
+        background-color: red;
+      }
+      img {
+        width: 200px;
+      }
+      container {
+        width: 90%;
+        }
+
+      h3 {
+        margin: 40px 0 0;
+      }
+
+      a {
+        color: #42b983;
+      }
+    </style>
+
+  </body>
+</html>
