@@ -3,67 +3,75 @@ const photoBaseUrl = "https://dog.ceo/api/breed/";
 
 const vm = new Vue({
   el: '#app',
-  data: {
-    allBreeds: [],
-    selectedBreeds: [],
-    maxSelection: 2,
-    picDivs: [],
-    picsUrls: [],
-    maxPic: 10
-  },
-  watch: {
-    selectedBreeds: function () {
-      if (this.selectedBreeds.length === 0) {
-        this.picDivs = [];
-        this.picsUrls = [];
-      } else if (this.selectedBreeds.length === 1) {
-        axios.get(photoBaseUrl + this.selectedBreeds[0] + '/images').then(res => {
-          this.picsUrls = res.data.message.slice(0, this.maxPic)
-          // console.log(res.data.message);
-          this.picDivs = new Array(10).fill(this.selectedBreeds[0])
-          console.log(this.picDivs)
-          console.log(this.picsUrls)
-        })
-      } else if (this.selectedBreeds.length === 2) {
-        this.picsUrls = this.picsUrls.slice(0, this.maxPic / 2);
-        console.log(this.selectedBreeds[1]);
-        console.log(this.picsUrls);
-        axios.get(photoBaseUrl + this.selectedBreeds[1] + '/images').then(res => {
-          this.picsUrls = this.picsUrls.concat(res.data.message.slice(0, this.maxPic / 2))
-          this.picDivs = new Array(10).fill(this.selectedBreeds[0]);
-          this.picDivs = this.picDivs.fill(this.selectedBreeds[1], 5)
-          console.log(this.picDivs)
-          console.log(this.picsUrls)
-        })
-      }
+  data: function () {
+    return {
+      allBreeds: [],
+      selectedBreeds: [],
+      maxSelection: 2,
+      picDivs: [],
+      picsUrls: {},
+      maxPic: 10
     }
   },
-  mounted: function () {
-    axios.get(allBreedsUrl).then(response => {
-      // console.log(typeof (response.data.message))
-      this.allBreeds = (response.data.message)
-    })
+
+  created: function () {
+    this.getAllBreeds();
   },
   methods: {
-    removeElement: function (index) {
-      // Vue.delete(this.picsUrls, index);
-      this.picsUrls.splice(index, 1);
-      this.picDivs.splice(index, 1);
-      // console.log(this.picDivs);
-      // console.log(this.selectedBreeds[0])
-      // console.log(this.selectedBreeds[1])
-      if ((this.picDivs.length <= this.maxPic / 2) ) {
-        console.log(this.picDivs.indexOf(this.selectedBreeds[0]))
-        console.log(this.picDivs.indexOf(this.selectedBreeds[1]))
-
-        if(this.picDivs.indexOf(this.selectedBreeds[0]) === -1) {
-          // this.selectedBreeds = this.selectedBreeds.splice(0, 1);
-          this.selectedBreeds.splice(0, 1);
-        } else if (this.selectedBreeds.length === 2 && (this.picDivs.indexOf(this.selectedBreeds[1]) === -1)) {
-          this.selectedBreeds.splice(1, 1);
-          // this.selectedBreeds = this.selectedBreeds.splice(1, 1);
-        }
+    removeElement(breedIndex, urlIndex) {
+      console.log(breedIndex)
+      console.log(urlIndex)
+      // console.log(this.picsUrls)
+      // console.log(this.picsUrls(0))
+      this.picsUrls[breedIndex].urlArr.splice(urlIndex, 1);
+      console.log(this.picsUrls[breedIndex].urlArr.length)
+      if (this.picsUrls[breedIndex].urlArr.length ===0) {
+        // this.picsUrls.slice(breedIndex, 1);
+        this.$delete(
+          this.selectedBreeds,
+          this.selectedBreeds.indexOf(this.picsUrls[breedIndex].breedName)
+        );
+        this.$delete(this.picsUrls, breedIndex);
+        console.log('should have deleted something?')
       }
+    },
+    getAllBreeds: function () {
+      axios.get(allBreedsUrl).then(response => {
+        this.allBreeds = (response.data.message)
+      })
+    },
+    getRandomImgsForEachBreed(breedName, number) {
+      let name = breedName;
+      axios.get(photoBaseUrl + breedName + '/images/random/' + number )
+        .then((res) => {
+          let data = res.data.message
+          let obj = {
+            breedName,
+            urlArr: res.data.message
+          }
+          // console.log(breedName)
+          // console.log(data)
+          // console.log(this.picsUrls)
+          //working
+          this.picsUrls.push(obj);
+          
+          // not working
+          // Vue.set(this.picsUrls, breedName, { urlArr: data });
+          console.log(this.picsUrls)
+
+          // this.$set(this.testNew, breedName, { urlArr: data });
+          // this.$set(this.picsUrls, breedName, { urlArr: res.data.message });
+          // console.log(this.picsUrls);
+      });
+    },
+    getRamdomImages: function () {
+      let numberPerBreed = this.maxPic / this.selectedBreeds.length;
+      this.picDivs = [];
+      this.picsUrls = [];
+      this.selectedBreeds.forEach((breed) => {
+        this.getRandomImgsForEachBreed(breed, numberPerBreed)
+      })
     }
+
   }
 });
