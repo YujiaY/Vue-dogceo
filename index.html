@@ -13,14 +13,14 @@
   <p>Number of Breeds: {{Object.keys(allBreeds).length}}</p>
   <span>Selected Breeds(Max selection: {{maxSelection}}) {{ selectedBreeds }}</span>
   <div>
-    <button class="btn btn-primary" @click="getRamdomImages">Get new Images</button>
+    <button class="btn btn-primary" @click="getImgsForAll">Get new Images</button>
   </div>
 
   <hr>
 
   <div class="container">
     <div class="row">
-      <div class="text-center columns col-3">
+      <div class="text-center columns col-3 " style="overflow: scroll; height: 90vh">
 
         <ol>
           <li v-for="(value, name) in allBreeds">
@@ -33,20 +33,6 @@
               :disabled="selectedBreeds.length >= maxSelection && selectedBreeds.indexOf(name) === -1"
             >
             <label :for=name>{{ name }}({{value.length}}) </label>
-<!--                <div v-if="selectedBreeds.indexOf(name) !== -1">-->
-<!--    &lt;!&ndash;              <p>I am selected!</p>&ndash;&gt;-->
-<!--                  <div class="row">-->
-<!--                    <div v-for="(item, index) in picsUrls">-->
-<!--                      <p class="text-center">{{item.breedName}}</p>-->
-<!--                      <span class="card text-center" v-for="urlAdd in item.urlArr">-->
-<!--                                          <p>{{item.breedName}}</p>-->
-<!--                        <img class="rounded float-left" :src="urlAdd" />-->
-<!--                      </span>-->
-<!--                      <hr>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--    -->
-<!--                </div>-->
           </li>
         </ol>
       </div>
@@ -60,7 +46,12 @@
                     <div class="card text-center" v-for="(urlAdd, urlIndex) in item.urlArr">
                       <h5 class="card-title">{{item.breedName}}</h5>
                       <img class="card-img-bottom rounded" :src="urlAdd" />
-                      <span>Not like it? </span><button class="btn btn-danger" @click="removeElement(breedIndex, urlIndex)">DELETE it!</button>
+                      <span>Not like it? </span>
+                      <button
+                        class="btn btn-danger"
+                        @click="removeElement(breedIndex, urlIndex)"
+                      >
+                        DELETE it!</button>
                     </div>
                     <hr>
                   </li>
@@ -94,14 +85,6 @@
      object-fit: cover;
   }
 
-
-  img {
-    width: 200px;
-  }
-
-  .container {
-    width: 90%;
-  }
 </style>
 
 </body>
