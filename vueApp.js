@@ -35,7 +35,7 @@ const vm = new Vue({
         this.allBreeds = (response.data.message)
       })
     },
-    getImgsPerBreed: function (breedName, number) {
+    addImgRequestPerBreed: function (breedName, number) {
       return axios.get(photoBaseUrl + breedName + '/images/random/' + number)
     },
     getImgsForAll: function () {
@@ -43,7 +43,7 @@ const vm = new Vue({
       this.picsUrls = [];
       let axiosQueries = [];
       this.selectedBreeds.forEach((breed) => {
-        axiosQueries.push(this.getImgsPerBreed(breed, numberPerBreed))
+        axiosQueries.push(this.addImgRequestPerBreed(breed, numberPerBreed))
       });
       axios.all(axiosQueries)
         .then(resArr => {
